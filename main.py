@@ -15,7 +15,6 @@ app = FastAPI(title="Career Autopilot", version="1.0.0")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-
 # Data models
 class UserData(BaseModel):
     level: int = 1
@@ -33,19 +32,15 @@ class UserData(BaseModel):
     total_coins_earned: int = 0
     last_login: str = ""
 
-
 class QuestCompletion(BaseModel):
     quest_id: int
-
 
 class GoalUpdate(BaseModel):
     goal_id: str
     completed: bool
 
-
 class AIChatMessage(BaseModel):
     message: str
-
 
 # Demo data
 CAREER_PATHS = {
@@ -87,10 +82,8 @@ GOALS = {
     "medium_term": [
         {"id": "goal_6", "name": "Master 3 new skills", "xp_reward": 300, "coins_reward": 150, "category": "skills"},
         {"id": "goal_7", "name": "Reach level 10", "xp_reward": 400, "coins_reward": 200, "category": "progress"},
-        {"id": "goal_8", "name": "Complete AI career plan", "xp_reward": 350, "coins_reward": 175,
-         "category": "career"},
-        {"id": "goal_9", "name": "Get all learning badges", "xp_reward": 280, "coins_reward": 140,
-         "category": "achievements"}
+        {"id": "goal_8", "name": "Complete AI career plan", "xp_reward": 350, "coins_reward": 175, "category": "career"},
+        {"id": "goal_9", "name": "Get all learning badges", "xp_reward": 280, "coins_reward": 140, "category": "achievements"}
     ]
 }
 
@@ -104,7 +97,6 @@ BADGES = {
 
 # In-memory storage (in production use database)
 user_sessions = {}
-
 
 def get_user_data(session_id: str) -> UserData:
     if session_id not in user_sessions:
@@ -120,18 +112,15 @@ def get_user_data(session_id: str) -> UserData:
         )
     return user_sessions[session_id]
 
-
 def update_daily_streak(user_data: UserData):
     now = datetime.now()
-    last_login = datetime.fromisoformat(user_data.last_login)
-
-    if (now.date() - last_login.date()).days == 1:
-        user_data.daily_streak += 1
-    elif (now.date() - last_login.date()).days > 1:
-        user_data.daily_streak = 1
-
+    if user_data.last_login:
+        last_login = datetime.fromisoformat(user_data.last_login)
+        if (now.date() - last_login.date()).days == 1:
+            user_data.daily_streak += 1
+        elif (now.date() - last_login.date()).days > 1:
+            user_data.daily_streak = 1
     user_data.last_login = now.isoformat()
-
 
 def ai_assistant_response(message: str, user_data: UserData) -> dict:
     message_lower = message.lower()
@@ -201,12 +190,10 @@ Ready to begin your journey?
             """
         }
 
-
 # Routes
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
 
 @app.get("/api/user")
 async def get_user(session_id: str = "default"):
@@ -214,21 +201,17 @@ async def get_user(session_id: str = "default"):
     update_daily_streak(user_data)
     return user_data
 
-
 @app.get("/api/career_paths")
 async def get_career_paths():
     return CAREER_PATHS
-
 
 @app.get("/api/quests")
 async def get_quests():
     return QUESTS
 
-
 @app.get("/api/goals")
 async def get_goals():
     return GOALS
-
 
 @app.post("/api/complete_quest")
 async def complete_quest(quest: QuestCompletion, session_id: str = "default"):
@@ -261,13 +244,11 @@ async def complete_quest(quest: QuestCompletion, session_id: str = "default"):
 
     return {"success": False}
 
-
 @app.post("/api/select_career")
 async def select_career(career_path: str, session_id: str = "default"):
     user_data = get_user_data(session_id)
     user_data.career_path = career_path
     return {"success": True}
-
 
 @app.post("/api/select_goal")
 async def select_goal(goal_id: str, session_id: str = "default"):
@@ -275,7 +256,6 @@ async def select_goal(goal_id: str, session_id: str = "default"):
     if goal_id not in user_data.selected_goals:
         user_data.selected_goals.append(goal_id)
     return {"success": True}
-
 
 @app.post("/api/toggle_goal")
 async def toggle_goal(goal: GoalUpdate, session_id: str = "default"):
@@ -301,7 +281,6 @@ async def toggle_goal(goal: GoalUpdate, session_id: str = "default"):
         user_data.completed_goals.remove(goal.goal_id)
 
     return {"success": True}
-
 
 @app.post("/api/ai_chat")
 async def ai_chat(message: AIChatMessage, session_id: str = "default"):
@@ -315,47 +294,6 @@ async def ai_chat(message: AIChatMessage, session_id: str = "default"):
         user_data.xp += 50
 
     return response
-
-
-# Добавьте эти маршруты в main.py
-
-@app.get("/api/goals")
-async def get_goals():
-    return GOALS
-
-
-@app.post("/api/select_goal")
-async def select_goal(goal_id: str, session_id: str = "default"):
-    user_data = get_user_data(session_id)
-    if goal_id not in user_data.selected_goals:
-        user_data.selected_goals.append(goal_id)
-    return {"success": True}
-
-
-@app.post("/api/toggle_goal")
-async def toggle_goal(goal: GoalUpdate, session_id: str = "default"):
-    user_data = get_user_data(session_id)
-
-    if goal.completed and goal.goal_id not in user_data.completed_goals:
-        user_data.completed_goals.append(goal.goal_id)
-
-        # Find goal reward
-        for category in GOALS.values():
-            for g in category:
-                if g["id"] == goal.goal_id:
-                    user_data.xp += g["xp_reward"]
-                    user_data.coins += g["coins_reward"]
-                    user_data.total_xp_earned += g["xp_reward"]
-                    user_data.total_coins_earned += g["coins_reward"]
-
-                    if "goal_setter" not in user_data.badges:
-                        user_data.badges.append("goal_setter")
-                    break
-
-    elif not goal.completed and goal.goal_id in user_data.completed_goals:
-        user_data.completed_goals.remove(goal.goal_id)
-
-    return {"success": True}
 
 if __name__ == "__main__":
     import uvicorn
