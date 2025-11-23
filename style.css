@@ -1,0 +1,713 @@
+:root {
+    --space-black: #0A0A14;
+    --cosmic-purple: #6366F1;
+    --nebula-blue: #3B82F6;
+    --starlight-white: #F8FAFC;
+    --comet-cyan: #06B6D4;
+    --galaxy-gray: #1E293B;
+    --orbit-silver: #64748B;
+    --supernova-orange: #F59E0B;
+    --quantum-green: #10B981;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--space-black);
+    color: var(--starlight-white);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Cosmic Background */
+.cosmic-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 4s infinite;
+}
+
+.star:nth-child(1) { top: 20%; left: 10%; width: 2px; height: 2px; animation-delay: 0s; }
+.star:nth-child(2) { top: 60%; left: 80%; width: 3px; height: 3px; animation-delay: 1s; }
+.star:nth-child(3) { top: 80%; left: 30%; width: 1px; height: 1px; animation-delay: 2s; }
+
+.nebula {
+    position: absolute;
+    top: 50%;
+    right: 10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+    filter: blur(40px);
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* App Container */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Cosmic Navigation */
+.cosmic-nav {
+    width: 280px;
+    background: rgba(10, 10, 20, 0.8);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.cosmic-nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cosmic-purple), transparent);
+}
+
+.nav-brand {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.logo-orb {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--cosmic-purple), var(--nebula-blue));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 24px;
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.nav-brand h1 {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--starlight-white), var(--comet-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
+}
+
+.tagline {
+    font-size: 12px;
+    color: var(--orbit-silver);
+    font-weight: 300;
+}
+
+/* User Orb */
+.user-orb {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.user-avatar {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 15px;
+}
+
+.orbit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 50%;
+    animation: spin 20s linear infinite;
+}
+
+.satellite {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: var(--comet-cyan);
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+.user-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--galaxy-gray), var(--space-black));
+    border: 2px solid var(--cosmic-purple);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.user-info {
+    text-align: center;
+}
+
+.level-badge {
+    background: linear-gradient(135deg, var(--cosmic-purple), var(--nebula-blue));
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.xp-display {
+    font-size: 12px;
+    color: var(--orbit-silver);
+}
+
+/* Navigation Constellation */
+.nav-constellation {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-star {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid transparent;
+}
+
+.nav-star:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateX(5px);
+}
+
+.nav-star.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--cosmic-purple);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+.star-icon {
+    font-size: 20px;
+    margin-right: 12px;
+    width: 24px;
+    text-align: center;
+}
+
+.nav-star span {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.star-trail {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    width: 6px;
+    height: 6px;
+    background: var(--cosmic-purple);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-star.active .star-trail {
+    opacity: 1;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+    50% { opacity: 0.5; transform: translateY(-50%) scale(1.5); }
+}
+
+/* Cosmic Stats */
+.cosmic-stats {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.stat-comet {
+    text-align: center;
+    position: relative;
+    padding: 15px;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 12px;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.comet-head {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--supernova-orange), var(--comet-cyan));
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    position: relative;
+}
+
+.comet-head::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -30px;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--supernova-orange), transparent);
+    transform: translateY(-50%);
+}
+
+.comet-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--starlight-white);
+    margin-bottom: 5px;
+}
+
+.comet-label {
+    font-size: 12px;
+    color: var(--orbit-silver);
+}
+
+.progress-ring {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+}
+
+.ring-back {
+    fill: none;
+    stroke: var(--galaxy-gray);
+    stroke-width: 3;
+}
+
+.ring-front {
+    fill: none;
+    stroke: var(--cosmic-purple);
+    stroke-width: 3;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dasharray 0.3s ease;
+}
+
+.ring-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--starlight-white);
+}
+
+/* Main Content */
+.cosmic-main {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.mission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.header-orbit h2 {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--starlight-white), var(--comet-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.mission-time {
+    font-size: 14px;
+    color: var(--orbit-silver);
+    margin-top: 5px;
+}
+
+.signal-bars {
+    display: flex;
+    align-items: end;
+    gap: 3px;
+    height: 20px;
+}
+
+.bar {
+    width: 4px;
+    background: var(--quantum-green);
+    border-radius: 2px;
+    animation: signal 2s infinite;
+}
+
+.bar:nth-child(1) { height: 6px; animation-delay: 0s; }
+.bar:nth-child(2) { height: 10px; animation-delay: 0.2s; }
+.bar:nth-child(3) { height: 14px; animation-delay: 0.4s; }
+.bar:nth-child(4) { height: 18px; animation-delay: 0.6s; }
+
+@keyframes signal {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* Cosmic Sections */
+.cosmic-section {
+    display: none;
+}
+
+.cosmic-section.active {
+    display: block;
+}
+
+/* Constellation Grid */
+.constellation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.constellation-node {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 20px;
+    padding: 25px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.constellation-node:hover {
+    border-color: var(--cosmic-purple);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+}
+
+.node-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.constellation-node:hover .node-glow {
+    opacity: 1;
+}
+
+.node-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--starlight-white);
+}
+
+.main-node {
+    grid-column: 1 / -1;
+}
+
+/* Trajectory Display */
+.trajectory-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 0;
+}
+
+.planet {
+    text-align: center;
+    position: relative;
+}
+
+.planet.current .planet-ring {
+    width: 80px;
+    height: 80px;
+    border: 2px solid var(--comet-cyan);
+    border-radius: 50%;
+    position: relative;
+}
+
+.planet.current .planet-ring::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background: var(--comet-cyan);
+    border-radius: 50%;
+}
+
+.planet.destination .planet-glow {
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, var(--cosmic-purple), transparent 70%);
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    animation: pulse 2s infinite;
+}
+
+.planet span {
+    font-size: 12px;
+    color: var(--orbit-silver);
+    margin-top: 10px;
+    display: block;
+}
+
+.trajectory-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, var(--comet-cyan), var(--cosmic-purple));
+    margin: 0 20px;
+    position: relative;
+}
+
+.spacecraft {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background: var(--starlight-white);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--supernova-orange);
+    transition: left 0.5s ease;
+}
+
+.spacecraft::before {
+    content: '🚀';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+}
+
+/* Cosmic Notification */
+.cosmic-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(30, 41, 59, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--cosmic-purple);
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.cosmic-notification.show {
+    transform: translateX(0);
+}
+
+.notification-comet {
+    position: relative;
+    width: 30px;
+    height: 30px;
+}
+
+.comet-core {
+    width: 12px;
+    height: 12px;
+    background: var(--supernova-orange);
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+}
+
+.comet-tail {
+    position: absolute;
+    top: 50%;
+    right: -20px;
+    width: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--supernova-orange), transparent);
+    transform: translateY(-50%);
+}
+
+.notification-message {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+
+    .cosmic-nav {
+        width: 100%;
+        height: auto;
+    }
+
+    .constellation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trajectory-display {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .trajectory-line {
+        width: 2px;
+        height: 100px;
+        margin: 10px 0;
+    }
+}
+/* Additional styles for all sections */
+
+/* Profile specific styles */
+.profile-display {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.profile-avatar-large {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--cosmic-purple), var(--nebula-blue));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.profile-level {
+    color: var(--comet-cyan);
+    margin-bottom: 10px;
+}
+
+.profile-streak {
+    color: var(--supernova-orange);
+    font-weight: 600;
+}
+
+/* Ensure all sections are properly hidden by default */
+.cosmic-section {
+    display: none;
+}
+
+.cosmic-section.active {
+    display: block;
+}
+
+/* Loading states */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--orbit-silver);
+    font-style: italic;
+}
+
+/* Make sure navigation works */
+.nav-star {
+    cursor: pointer;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .constellation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mission-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-display {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
