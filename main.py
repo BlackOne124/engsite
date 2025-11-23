@@ -1,19 +1,21 @@
-from fastapi import FastAPI, Request, Depends, HTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-import json
-import uuid
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, List, Optional
 import os
 
 app = FastAPI(title="Career Autopilot", version="1.0.0")
 
-# Mount static files and templates
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Data models
 class UserData(BaseModel):
@@ -42,7 +44,10 @@ class GoalUpdate(BaseModel):
 class AIChatMessage(BaseModel):
     message: str
 
-# Demo data
+class CareerPathSelect(BaseModel):
+    career_path: str
+
+# Demo data - simplified for reliability
 CAREER_PATHS = {
     "Data Scientist": {
         "skills": ["Python", "SQL", "Machine Learning", "Statistics", "Data Visualization"],
@@ -87,20 +92,12 @@ GOALS = {
     ]
 }
 
-BADGES = {
-    "python_beginner": {"name": "Python Beginner", "description": "Completed first Python task", "icon": "🐍"},
-    "active_learner": {"name": "Active Learner", "description": "Completed 5 quests", "icon": "⭐"},
-    "team_player": {"name": "Team Player", "description": "Received feedback from colleague", "icon": "👥"},
-    "goal_setter": {"name": "Goal Setter", "description": "Set career goal", "icon": "🎯"},
-    "planner": {"name": "Planner", "description": "Created personal plan", "icon": "📋"}
-}
+# Global user data storage (in production, use database)
+user_data_store = {}
 
-# In-memory storage (in production use database)
-user_sessions = {}
-
-def get_user_data(session_id: str) -> UserData:
-    if session_id not in user_sessions:
-        user_sessions[session_id] = UserData(
+def get_user_data(session_id: str = "default") -> UserData:
+    if session_id not in user_data_store:
+        user_data_store[session_id] = UserData(
             skills_progress={
                 'Python': 65,
                 'SQL': 40,
@@ -110,15 +107,18 @@ def get_user_data(session_id: str) -> UserData:
             },
             last_login=datetime.now().isoformat()
         )
-    return user_sessions[session_id]
+    return user_data_store[session_id]
 
 def update_daily_streak(user_data: UserData):
     now = datetime.now()
     if user_data.last_login:
-        last_login = datetime.fromisoformat(user_data.last_login)
-        if (now.date() - last_login.date()).days == 1:
-            user_data.daily_streak += 1
-        elif (now.date() - last_login.date()).days > 1:
+        try:
+            last_login = datetime.fromisoformat(user_data.last_login)
+            if (now.date() - last_login.date()).days == 1:
+                user_data.daily_streak += 1
+            elif (now.date() - last_login.date()).days > 1:
+                user_data.daily_streak = 1
+        except:
             user_data.daily_streak = 1
     user_data.last_login = now.isoformat()
 
@@ -190,111 +190,154 @@ Ready to begin your journey?
             """
         }
 
-# Routes
-@app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+# Routes with error handling
+@app.get("/")
+async def root():
+    return {"message": "Career Autopilot API is running", "status": "healthy"}
 
 @app.get("/api/user")
 async def get_user(session_id: str = "default"):
-    user_data = get_user_data(session_id)
-    update_daily_streak(user_data)
-    return user_data
+    try:
+        user_data = get_user_data(session_id)
+        update_daily_streak(user_data)
+        return user_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching user data: {str(e)}")
 
 @app.get("/api/career_paths")
 async def get_career_paths():
-    return CAREER_PATHS
+    try:
+        return CAREER_PATHS
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching career paths: {str(e)}")
 
 @app.get("/api/quests")
 async def get_quests():
-    return QUESTS
+    try:
+        return QUESTS
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching quests: {str(e)}")
 
 @app.get("/api/goals")
 async def get_goals():
-    return GOALS
+    try:
+        return GOALS
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching goals: {str(e)}")
 
 @app.post("/api/complete_quest")
 async def complete_quest(quest: QuestCompletion, session_id: str = "default"):
-    user_data = get_user_data(session_id)
+    try:
+        user_data = get_user_data(session_id)
 
-    if quest.quest_id not in user_data.completed_quests:
-        quest_data = next((q for q in QUESTS if q["id"] == quest.quest_id), None)
-        if quest_data:
-            user_data.xp += quest_data["xp"]
-            user_data.coins += quest_data["coins"]
-            user_data.completed_quests.append(quest.quest_id)
-            user_data.total_quests_completed += 1
-            user_data.total_xp_earned += quest_data["xp"]
-            user_data.total_coins_earned += quest_data["coins"]
+        if quest.quest_id not in user_data.completed_quests:
+            quest_data = next((q for q in QUESTS if q["id"] == quest.quest_id), None)
+            if quest_data:
+                user_data.xp += quest_data["xp"]
+                user_data.coins += quest_data["coins"]
+                user_data.completed_quests.append(quest.quest_id)
+                user_data.total_quests_completed += 1
+                user_data.total_xp_earned += quest_data["xp"]
+                user_data.total_coins_earned += quest_data["coins"]
 
-            # Level up check
-            xp_needed = user_data.level * 100
-            if user_data.xp >= xp_needed:
-                user_data.level += 1
-                user_data.xp = 0
+                # Level up check
+                xp_needed = user_data.level * 100
+                if user_data.xp >= xp_needed:
+                    user_data.level += 1
+                    user_data.xp = 0
 
-            # Badge checks
-            if quest_data["skill"] == "Python" and "python_beginner" not in user_data.badges:
-                user_data.badges.append("python_beginner")
+                # Badge checks
+                if quest_data["skill"] == "Python" and "python_beginner" not in user_data.badges:
+                    user_data.badges.append("python_beginner")
 
-            if len(user_data.completed_quests) >= 3 and "active_learner" not in user_data.badges:
-                user_data.badges.append("active_learner")
+                if len(user_data.completed_quests) >= 3 and "active_learner" not in user_data.badges:
+                    user_data.badges.append("active_learner")
 
-            return {"success": True, "user_data": user_data}
+                return {"success": True, "user_data": user_data}
 
-    return {"success": False}
+        return {"success": False, "message": "Quest already completed or not found"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error completing quest: {str(e)}")
 
 @app.post("/api/select_career")
-async def select_career(career_path: str, session_id: str = "default"):
-    user_data = get_user_data(session_id)
-    user_data.career_path = career_path
-    return {"success": True}
+async def select_career(request: CareerPathSelect, session_id: str = "default"):
+    try:
+        user_data = get_user_data(session_id)
+        user_data.career_path = request.career_path
+        
+        # Award badge for selecting career path
+        if "goal_setter" not in user_data.badges:
+            user_data.badges.append("goal_setter")
+            user_data.coins += 50
+            user_data.xp += 25
+            
+        return {"success": True, "user_data": user_data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error selecting career path: {str(e)}")
 
 @app.post("/api/select_goal")
 async def select_goal(goal_id: str, session_id: str = "default"):
-    user_data = get_user_data(session_id)
-    if goal_id not in user_data.selected_goals:
-        user_data.selected_goals.append(goal_id)
-    return {"success": True}
+    try:
+        user_data = get_user_data(session_id)
+        if goal_id not in user_data.selected_goals:
+            user_data.selected_goals.append(goal_id)
+        return {"success": True, "user_data": user_data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error selecting goal: {str(e)}")
 
 @app.post("/api/toggle_goal")
 async def toggle_goal(goal: GoalUpdate, session_id: str = "default"):
-    user_data = get_user_data(session_id)
+    try:
+        user_data = get_user_data(session_id)
 
-    if goal.completed and goal.goal_id not in user_data.completed_goals:
-        user_data.completed_goals.append(goal.goal_id)
+        if goal.completed and goal.goal_id not in user_data.completed_goals:
+            user_data.completed_goals.append(goal.goal_id)
 
-        # Find goal reward
-        for category in GOALS.values():
-            for g in category:
-                if g["id"] == goal.goal_id:
-                    user_data.xp += g["xp_reward"]
-                    user_data.coins += g["coins_reward"]
-                    user_data.total_xp_earned += g["xp_reward"]
-                    user_data.total_coins_earned += g["coins_reward"]
-
-                    if "goal_setter" not in user_data.badges:
-                        user_data.badges.append("goal_setter")
+            # Find goal reward
+            reward_given = False
+            for category in GOALS.values():
+                for g in category:
+                    if g["id"] == goal.goal_id:
+                        user_data.xp += g["xp_reward"]
+                        user_data.coins += g["coins_reward"]
+                        user_data.total_xp_earned += g["xp_reward"]
+                        user_data.total_coins_earned += g["coins_reward"]
+                        reward_given = True
+                        
+                        if "goal_setter" not in user_data.badges:
+                            user_data.badges.append("goal_setter")
+                        break
+                if reward_given:
                     break
 
-    elif not goal.completed and goal.goal_id in user_data.completed_goals:
-        user_data.completed_goals.remove(goal.goal_id)
+        elif not goal.completed and goal.goal_id in user_data.completed_goals:
+            user_data.completed_goals.remove(goal.goal_id)
 
-    return {"success": True}
+        return {"success": True, "user_data": user_data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error toggling goal: {str(e)}")
 
 @app.post("/api/ai_chat")
 async def ai_chat(message: AIChatMessage, session_id: str = "default"):
-    user_data = get_user_data(session_id)
-    response = ai_assistant_response(message.message, user_data)
+    try:
+        user_data = get_user_data(session_id)
+        response = ai_assistant_response(message.message, user_data)
 
-    # Award for first AI interaction
-    if "goal_setter" not in user_data.badges:
-        user_data.badges.append("goal_setter")
-        user_data.coins += 100
-        user_data.xp += 50
+        # Award for first AI interaction
+        if "goal_setter" not in user_data.badges:
+            user_data.badges.append("goal_setter")
+            user_data.coins += 100
+            user_data.xp += 50
 
-    return response
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error in AI chat: {str(e)}")
+
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
