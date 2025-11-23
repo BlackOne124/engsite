@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Cosmos | AI-Powered Career Development</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Cosmic Background Elements -->
+    <div class="cosmic-bg">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="nebula"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Cosmic Navigation -->
+        <nav class="cosmic-nav">
+            <div class="nav-brand">
+                <div class="logo-orb">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h1>Career Cosmos</h1>
+                <span class="tagline">Navigate Your Professional Universe</span>
+            </div>
+
+            <div class="user-orb">
+                <div class="user-avatar">
+                    <div class="orbit">
+                        <div class="satellite"></div>
+                    </div>
+                    <div class="user-core">
+                        <i class="fas fa-user-astronaut"></i>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="level-badge">Level <span id="user-level">1</span></div>
+                    <div class="xp-display"><span id="user-xp">0</span> XP</div>
+                </div>
+            </div>
+
+            <div class="nav-constellation">
+                <div class="nav-star active" data-section="dashboard">
+                    <div class="star-icon">🚀</div>
+                    <span>Mission Control</span>
+                    <div class="star-trail"></div>
+                </div>
+                <div class="nav-star" data-section="profile">
+                    <div class="star-icon">👨‍🚀</div>
+                    <span>Astronaut Profile</span>
+                    <div class="star-trail"></div>
+                </div>
+                <div class="nav-star" data-section="galaxy">
+                    <div class="star-icon">🌌</div>
+                    <span>Career Galaxy</span>
+                    <div class="star-trail"></div>
+                </div>
+                <div class="nav-star" data-section="quests">
+                    <div class="star-icon">🎯</div>
+                    <span>Space Missions</span>
+                    <div class="star-trail"></div>
+                </div>
+                <div class="nav-star" data-section="goals">
+                    <div class="star-icon">⭐</div>
+                    <span>Stellar Goals</span>
+                    <div class="star-trail"></div>
+                </div>
+                <div class="nav-star" data-section="ai">
+                    <div class="star-icon">🤖</div>
+                    <span>AI Navigator</span>
+                    <div class="star-trail"></div>
+                </div>
+                <div class="nav-star" data-section="achievements">
+                    <div class="star-icon">🏆</div>
+                    <span>Cosmic Badges</span>
+                    <div class="star-trail"></div>
+                </div>
+            </div>
+
+            <div class="cosmic-stats">
+                <div class="stat-comet">
+                    <div class="comet-head"></div>
+                    <div class="comet-value" id="user-coins">0</div>
+                    <div class="comet-label">Stellar Coins</div>
+                </div>
+                <div class="progress-ring">
+                    <svg width="80" height="80">
+                        <circle class="ring-back" cx="40" cy="40" r="35"></circle>
+                        <circle class="ring-front" cx="40" cy="40" r="35" id="xp-ring"></circle>
+                    </svg>
+                    <div class="ring-text">XP</div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="cosmic-main">
+            <header class="mission-header">
+                <div class="header-orbit">
+                    <h2 id="page-title">Mission Control</h2>
+                    <div class="mission-time" id="current-date"></div>
+                </div>
+                <div class="signal-bars">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </header>
+
+            <!-- Mission Control -->
+            <section class="cosmic-section active" id="dashboard">
+                <div class="constellation-grid">
+                    <div class="constellation-node main-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Career Trajectory</h3>
+                            <div class="trajectory-display">
+                                <div class="planet current">
+                                    <div class="planet-ring"></div>
+                                    <span>Current Position</span>
+                                </div>
+                                <div class="trajectory-line">
+                                    <div class="spacecraft" id="career-progress"></div>
+                                </div>
+                                <div class="planet destination">
+                                    <div class="planet-glow"></div>
+                                    <span>Next Level</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Mission Briefing</h3>
+                            <div class="mission-stats" id="mission-stats">
+                                Loading mission data...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Active Missions</h3>
+                            <div class="mission-list" id="active-missions">
+                                <!-- Missions will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Stellar Objectives</h3>
+                            <div class="objectives-grid" id="objectives-grid">
+                                <!-- Objectives will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Astronaut Profile -->
+            <section class="cosmic-section" id="profile">
+                <div class="constellation-grid">
+                    <div class="constellation-node main-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Astronaut Profile</h3>
+                            <div class="profile-display">
+                                <div class="profile-avatar-large">
+                                    <i class="fas fa-user-astronaut"></i>
+                                </div>
+                                <div class="profile-info">
+                                    <div class="profile-name">Space Explorer</div>
+                                    <div class="profile-level">Level <span id="profile-level">1</span> Astronaut</div>
+                                    <div class="profile-streak" id="profile-streak">🔥 1-day streak</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Skill Constellation</h3>
+                            <div class="skills-universe" id="skills-universe">
+                                <!-- Skills will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Mission Statistics</h3>
+                            <div class="stats-grid" id="profile-stats">
+                                <!-- Statistics will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Career Galaxy -->
+            <section class="cosmic-section" id="galaxy">
+                <div class="constellation-grid">
+                    <div class="constellation-node main-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Explore Career Galaxies</h3>
+                            <div class="galaxy-map" id="galaxy-map">
+                                <!-- Career paths will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Your Current Galaxy</h3>
+                            <div class="current-galaxy" id="current-galaxy">
+                                <div class="no-galaxy">No galaxy selected yet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Space Missions -->
+            <section class="cosmic-section" id="quests">
+                <div class="constellation-grid">
+                    <div class="constellation-node main-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Available Space Missions</h3>
+                            <div class="missions-list" id="missions-list">
+                                <!-- Quests will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Completed Missions</h3>
+                            <div class="completed-missions" id="completed-missions">
+                                <!-- Completed quests will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stellar Goals -->
+            <section class="cosmic-section" id="goals">
+                <div class="constellation-grid">
+                    <div class="constellation-node main-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Your Stellar Goals</h3>
+                            <div class="goals-universe" id="goals-universe">
+                                <!-- Goals will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Goal Progress</h3>
+                            <div class="goals-progress" id="goals-progress">
+                                <!-- Goal progress will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Navigator -->
+            <section class="cosmic-section" id="ai">
+                <div class="constellation-grid">
+                    <div class="constellation-node main-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>AI Career Navigator</h3>
+                            <div class="ai-chat-container">
+                                <div class="chat-messages" id="ai-chat-messages">
+                                    <div class="ai-message">
+                                        <div class="message-avatar">🤖</div>
+                                        <div class="message-content">
+                                            Greetings, Space Explorer! I'm your AI Career Navigator. I can help you plan your career trajectory through the cosmos. What would you like to explore today?
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="chat-input-container">
+                                    <input type="text" id="ai-chat-input" placeholder="Ask about career paths, skills, or missions...">
+                                    <button id="send-ai-message">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Quick Questions</h3>
+                            <div class="quick-questions">
+                                <button class="quick-question" data-question="What career path should I choose?">
+                                    🚀 Career Guidance
+                                </button>
+                                <button class="quick-question" data-question="What skills should I learn next?">
+                                    💫 Skill Recommendations
+                                </button>
+                                <button class="quick-question" data-question="How do I advance to the next level?">
+                                    🌟 Level Advancement
+                                </button>
+                                <button class="quick-question" data-question="Tell me about available missions">
+                                    🎯 Mission Briefing
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cosmic Badges -->
+            <section class="cosmic-section" id="achievements">
+                <div class="constellation-grid">
+                    <div class="constellation-node main-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Your Cosmic Badges</h3>
+                            <div class="badges-constellation" id="badges-constellation">
+                                <!-- Badges will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="constellation-node">
+                        <div class="node-glow"></div>
+                        <div class="node-content">
+                            <h3>Available Badges</h3>
+                            <div class="available-badges" id="available-badges">
+                                <!-- Available badges will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Cosmic Notification System -->
+    <div class="cosmic-notification" id="notification">
+        <div class="notification-comet">
+            <div class="comet-tail"></div>
+            <div class="comet-core"></div>
+        </div>
+        <div class="notification-message"></div>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
