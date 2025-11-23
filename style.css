@@ -710,4 +710,88 @@ body {
     .stats-grid {
         grid-template-columns: 1fr;
     }
+
+}
+/* Ensure all interactive elements have proper states */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Loading states */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: var(--orbit-silver);
+}
+
+.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--orbit-silver);
+    border-top: 2px solid var(--cosmic-purple);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+
+/* Error states */
+.error-message {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* Responsive improvements */
+@media (max-width: 480px) {
+    .cosmic-main {
+        padding: 15px;
+    }
+    
+    .mission-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .profile-display {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .space-mission {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .mission-action {
+        width: 100%;
+    }
+}
+
+/* Ensure proper contrast for accessibility */
+@media (prefers-contrast: high) {
+    :root {
+        --cosmic-purple: #4f46e5;
+        --nebula-blue: #2563eb;
+        --comet-cyan: #0891b2;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
